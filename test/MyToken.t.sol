@@ -4,22 +4,24 @@ pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
 import {console2} from "forge-std/console2.sol";
+import {MyTokenScript} from "../script/MyToken.s.sol";
 import {MyToken} from "../src/MyToken.sol";
 
 contract MyTokenTest is Test {
+    MyTokenScript public _deployer;
     MyToken public _myToken;
-    address _deployer = address(this);
     address john;
     address alice;
-    uint256 constant INITIAL_SUPPLY = 10000;
     uint256 constant INITIAL_BALANCE_JOHN = 2000;
 
     function setUp() public {
-        _myToken = new MyToken(INITIAL_SUPPLY);
+        _deployer = new MyTokenScript();
+        _myToken = _deployer.run();
 
         john = makeAddr("john");
         alice = makeAddr("alice");
 
+        vm.prank(_deployer.deployer());
         _myToken.transfer(john, INITIAL_BALANCE_JOHN);
     }
 
